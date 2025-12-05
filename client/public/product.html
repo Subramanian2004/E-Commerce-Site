@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Product Details - Vendo</title>
+
+  <!-- IMPORTANT: these paths are relative to client/public/product.html -->
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/product.css" />
+  <link rel="stylesheet" href="css/chatbot.css" />
+</head>
+<body>
+
+  <header class="navbar">
+    <div class="container" style="display:flex;align-items:center;gap:12px;padding:20px 0;">
+      <div class="logo"><a href="index.html">Flash</a></div>
+      <div style="flex:1">
+        <input id="searchInput" placeholder="Search products..." style="width:80%;padding:10px;border-radius:6px;border:none #e6edf5;" />
+      </div>
+      <nav style="display:flex;gap:12px;">
+        <a href="login.html">Login</a>
+        <a href="cart.html">Cart</a>
+        <a href="account.html">Account</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="product-container container" style="display:grid;grid-template-columns:1fr 1.2fr 0.8fr;gap:20px;padding-top:20px;">
+    <!-- LEFT -->
+    <section class="product-images">
+      <img id="mainImage" src="images/sample-product.jpg" alt="Product Image" style="width:100%;max-width:420px;border-radius:10px;" onerror="this.src='https://via.placeholder.com/420x320?text=No+Image'">
+      <div class="thumbnail-row" style="margin-top:12px;display:flex;gap:10px;">
+        <img class="thumbnail" src="/javascript-amazon-project-main/images/products/adults-plain-cotton-tshirt-2-pack-teal.jpg" style="width:72px;height:72px;object-fit:cover;border-radius:8px;" onclick="changeImage(this)" onerror="this.src='https://via.placeholder.com/72'">
+        <img class="thumbnail" src="/javascript-amazon-project-main/images/products/bathroom-rug.jpg" style="width:72px;height:72px;object-fit:cover;border-radius:8px;" onclick="changeImage(this)" onerror="this.src='https://via.placeholder.com/72'">
+        <img class="thumbnail" src="/javascript-amazon-project-main/images/products/women-stretch-popover-hoodie-black.jpg" style="width:72px;height:72px;object-fit:cover;border-radius:8px;" onclick="changeImage(this)" onerror="this.src='https://via.placeholder.com/72'">
+      </div>
+    </section>
+
+    <!-- CENTER -->
+    <section class="product-details">
+      <h2 id="productName">Sample Product Title</h2>
+      <div class="ratings">⭐⭐⭐⭐☆ (4.2)</div>
+      <p class="price" style="font-size:26px;color:var(--primary);margin:10px 0;">₹1,299</p>
+      <p class="description">This is a sample description. Replace with dynamic data from backend later.</p>
+      <ul class="feature-list"><li>High quality material</li><li>1-year warranty</li><li>Free delivery</li></ul>
+    </section>
+
+    <!-- RIGHT -->
+    <aside class="product-buy-box">
+      <p class="price-box" style="font-size:22px;color:var(--primary);">₹1,299</p>
+      <label for="qty">Quantity:</label>
+      <select id="qty" style="width:100%;padding:8px;margin-top:8px;border-radius:6px;border:1px solid #e6edf5;">
+        <option>1</option><option>2</option><option>3</option>
+      </select>
+
+      <button id="addToCartBtn" style="display:block;width:100%;margin-top:12px;padding:12px;border-radius:8px;background:#ffd03b;border:none;cursor:pointer;">Add to Cart</button>
+      <button id="buyNowBtn" style="display:block;width:100%;margin-top:10px;padding:12px;border-radius:8px;background:#ff9800;border:none;color:#fff;cursor:pointer;">Buy Now</button>
+
+      <p style="margin-top:12px;color:#6b7280;font-size:13px;">Delivery in 3–5 days</p>
+    </aside>
+  </main>
+
+  <script>
+    // Test: make sure CSS file resolved
+    fetch('css/product.css', {method:'HEAD'}).then(r=>{
+      console.log('product.css', r.status, r.ok);
+    }).catch(e => { console.warn('fetch error', e); });
+
+    function changeImage(img){
+      document.getElementById('mainImage').src = img.src;
+    }
+
+    document.getElementById('addToCartBtn').addEventListener('click', ()=>{
+      const cart = JSON.parse(localStorage.getItem('vendo_cart')||'[]');
+      cart.push({id:1,qty:parseInt(document.getElementById('qty').value||1)});
+      localStorage.setItem('vendo_cart', JSON.stringify(cart));
+      alert('Added to cart');
+    });
+  </script>
+
+</body>
+</html>
