@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Flash — Home</title>
+
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="./css/global.css" />
+  <link rel="stylesheet" href="./css/homepage.css" />
+</head>
+
+<body>
+
+<!-- Top Navbar -->
+<header class="topbar">
+  <div class="container">
+    <div class="brand">
+      <div class="logo">V</div>
+      <h1>Flash</h1>
+    </div>
+
+    <div class="searchbar">
+      <input id="searchInput" type="text" placeholder="Search for products..." />
+      <button id="searchBtn">Search</button>
+    </div>
+
+    <div class="top-actions">
+      <a href="login.html">Sign in</a>
+      <a href="cart.html">Cart (<span id="cartCount">0</span>)</a>
+    </div>
+  </div>
+</header>
+
+<!-- Category Bar -->
+<nav class="category-bar">
+  <div class="container">
+    <a href="#">All</a>
+    <a href="#">Electronics</a>
+    <a href="#">Fashion</a>
+    <a href="#">Home</a>
+    <a href="#">Beauty</a>
+    <a href="#">Sports</a>
+  </div>
+</nav>
+
+<div class="container">
+  <main>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h3>Shop by Category</h3>
+      <div class="category-list">
+        <a href="#">Mobiles</a>
+        <a href="#">Laptops</a>
+        <a href="#">TVs</a>
+        <a href="#">Clothing</a>
+      </div>
+
+      <hr />
+
+      <h3>Filters</h3>
+      <label>Price: <input type="range" id="priceRange" min="0" max="1000" /></label>
+    </aside>
+
+    <!-- Main Content -->
+    <section class="content">
+      <div class="hero">
+        <div class="text">
+          <h2>Discover great deals every day</h2>
+          <p>Fast shipping • Easy returns • 24/7 AI support</p>
+        </div>
+        <img src="./images/hero.jpg" class="hero-img" />
+      </div>
+
+      <div class="content-header">
+        <h3>Featured Products</h3>
+        <select id="sortSelect">
+          <option value="relevance">Relevance</option>
+          <option value="price-asc">Price: Low to High</option>
+          <option value="price-desc">Price: High to Low</option>
+        </select>
+      </div>
+
+      <div class="products" id="productGrid">
+        <!-- JS will inject products -->
+      </div>
+
+      <footer class="site-footer">
+        <div>© 2025 Vendo — Built with ❤️</div>
+        <div><a href="#">Help</a> • <a href="#">Terms</a> • <a href="#">Privacy</a></div>
+      </footer>
+    </section>
+  </main>
+</div>
+
+<!-- Scripts -->
+<script src="./js/main.js"></script>
+<script src="./js/homepage.js"></script>
+
+</body>
+</html>
