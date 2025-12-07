@@ -4,77 +4,59 @@ function changeImage(img) {
     mainImage.src = img.src;
 }
 
-// ADD TO CART
-document.getElementById("addToCartBtn").addEventListener("click", () => {
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+//  UNIVERSAL ADD TO CART
+function addToCart(productObj, qty = 1) {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  const product = {
-    id: productData.id,
-    title: productData.title,
-    price: productData.price,
-    quantity: Number(document.getElementById("quantity").value),
-    image: productData.image
-  };
+    // FIX 1: Auto-generate unique ID if missing  
+    const id = productObj.id || Date.now();
 
-  cart.push(product);
+    // FIX 2: Correct image path
+    const imgPath = productObj.image.startsWith("http")
+        ? productObj.image
+        : "../public/images/" + productObj.image.replace(/^.*[\\/]/, "");
 
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  alert("Item added to cart!");
-  window.location.href = "./cart.html";
-});
-
-// Defensive add-to-cart helper — use this in product page
-function addToCartFromProduct(productData, qty = 1) {
-  try {
-    // productData must contain id, name (or title), price, image
-    const normalized = {
-      id: productData.id ?? productData._id ?? Date.now(),
-      name: productData.name || productData.title || 'Untitled',
-      price: Number(productData.price ?? 0),
-      image: productData.image || productData.img || 'images/no-image.png',
-      quantity: Number(qty || 1)
+    const product = {
+        id: id,
+        name: productObj.title || productObj.name || "Unnamed",
+        price: Number(productObj.price),
+        image: imgPath,
+        quantity: Number(qty)
     };
 
-    const key = 'cart';
-    const raw = localStorage.getItem(key);
-    const cart = raw ? JSON.parse(raw) : [];
+    // FIX 3: If product exists, increase qty
+    const existing = cart.find(item => item.id === product.id);
 
-    // If same product id exists, increment qty
-    const existing = cart.find(it => String(it.id) === String(normalized.id));
     if (existing) {
-      existing.quantity = (existing.quantity || 0) + normalized.quantity;
+        existing.quantity += product.quantity;
     } else {
-      cart.push(normalized);
+        cart.push(product);
     }
 
-    localStorage.setItem(key, JSON.stringify(cart));
-    console.log('Added to cart:', normalized);
-    // small UI feedback
-    if (window.showToast) showToast('Added to cart'); else alert('Added to cart');
-  } catch (err) {
-    console.error('addToCartFromProduct error', err);
-  }
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Added to cart!");
 }
 
-function addToCart(product) {
-  const KEY = "cart";
-  let cart = JSON.parse(localStorage.getItem(KEY)) || [];
 
-  const existing = cart.find(item => item.id === product.id);
+//  ADD BUTTON FUNCTION
+document.getElementById("addToCartBtn").addEventListener("click", () => {
+    let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  if (existing) {
-    existing.quantity += 1;
-  } else {
-    cart.push({
-      id: product.id,
-      name: product.name,
-      price: product.price,
-      image: product.image,
-      quantity: 1
-    });
-  }
+    const imgFile = productData.image.replace(/^.*[\\/]/, ""); // remove folder prefix
 
-  localStorage.setItem(KEY, JSON.stringify(cart));
-  alert("Added to Cart!");
-}
+    const product = {
+        id: productData.id || Date.now(),
+        name: productData.title || productData.name,
+        price: Number(productData.price),
+        quantity: Number(document.getElementById("quantity").value),
+        image: "../public/images/" + imgFile 
+    };
+
+    cart.push(product);
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+    alert("Item added to cart!");
+    window.location.href = "./cart.html";
+});
+
+
