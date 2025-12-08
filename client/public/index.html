@@ -16,7 +16,7 @@
 <header class="topbar">
   <div class="container">
     <div class="brand">
-      <div class="logo">V</div>
+      <div class="logo">⚡</div>
       <h1>Flash</h1>
     </div>
 
@@ -50,48 +50,56 @@
     <aside class="sidebar">
       <h3>Shop by Category</h3>
       <div class="category-list">
-        <a href="#">Mobiles</a>
-        <a href="#">Laptops</a>
-        <a href="#">TVs</a>
+        <a href="#">Electronics</a>
         <a href="#">Clothing</a>
+        <a href="#">Home & Garden</a>
+        <a href="#">Sports</a>
       </div>
       <hr />
-      <h3>Filters</h3>
-      <label>Price: <input type="range" id="priceRange" min="0" max="1000" /></label>
+      <h3>Price Range</h3>
+      <div style="margin-bottom: 10px;">
+        <input type="range" id="priceRange" min="0" max="5000" value="5000" style="width: 100%;">
+        <p style="margin: 5px 0; font-size: 12px; color: var(--muted);">Max: ₹<span id="priceValue">5000</span></p>
+      </div>
     </aside>
 
     <!-- Main Content -->
     <section class="content">
+      <!-- Hero Banner -->
       <div class="hero">
         <div class="text">
           <h2>Discover great deals every day</h2>
-          <p>Fast shipping • Easy returns • 24/7 AI support</p>
+          <p>⚡ Fast shipping • Easy returns • 24/7 AI support</p>
         </div>
-        <img src="./images/hero.jpg" class="hero-img" />
+        <img src="../public/images/hero.jpg" class="hero-img" alt="Hero" />
       </div>
 
+      <!-- Content Header -->
       <div class="content-header">
         <h3>Featured Products</h3>
         <select id="sortSelect">
           <option value="relevance">Relevance</option>
           <option value="price-asc">Price: Low to High</option>
           <option value="price-desc">Price: High to Low</option>
+          <option value="rating">Top Rated</option>
         </select>
       </div>
 
+      <!-- Products Grid -->
       <div class="products" id="productGrid">
         <!-- JS will inject products -->
       </div>
 
+      <!-- Footer -->
       <footer class="site-footer">
-        <div>© 2025 Vendo — Built with ❤️</div>
+        <div>© 2025 Flash — Built with ❤️</div>
         <div><a href="#">Help</a> • <a href="#">Terms</a> • <a href="#">Privacy</a></div>
       </footer>
     </section>
   </main>
 </div>
 
-<!-- Scripts -->
+<!-- Scripts in correct order -->
 <script src="../public/js/main.js"></script>
 <script src="../public/js/homepage.js"></script>
 

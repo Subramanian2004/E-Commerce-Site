@@ -1,127 +1,137 @@
-// SAMPLE PRODUCTS (replace with API call later)
-const products = [];
-for(let i=1;i<=12;i++){
-  products.push({
-    id: i,
-    title: `Sample Product ${i}`,
-    price: (Math.random()*250 + 20).toFixed(2),
-    rating: (Math.random()*2 + 3).toFixed(1),
-    img: `https://picsum.photos/seed/p${i}/400/300`
-  });
-}
+// HOMEPAGE.JS - PRODUCT LISTING & ACTIONS
+console.log("✅ homepage.js loaded");
 
+// SAMPLE PRODUCTS DATA
+const products = [
+  { id: 1, title: 'Wireless Earbuds', price: 1299, rating: 4.5, img: 'images/earbuds.jpg' },
+  { id: 2, title: 'Smart Watch', price: 2999, rating: 4.2, img: 'images/smartwatch.jpg' },
+  { id: 3, title: 'USB-C Cable', price: 299, rating: 4.8, img: 'images/cable.jpg' },
+  { id: 4, title: 'Phone Stand', price: 499, rating: 4.6, img: 'images/stand.jpg' },
+  { id: 5, title: 'Laptop Bag', price: 1999, rating: 4.4, img: 'images/bag.jpg' },
+  { id: 6, title: 'Wireless Mouse', price: 799, rating: 4.3, img: 'images/mouse.jpg' },
+  { id: 7, title: 'USB Hub', price: 899, rating: 4.7, img: 'images/hub.jpg' },
+  { id: 8, title: 'Screen Protector', price: 199, rating: 4.5, img: 'images/protector.jpg' },
+  { id: 9, title: 'Phone Case', price: 399, rating: 4.6, img: 'images/case.jpg' },
+  { id: 10, title: 'Charging Pad', price: 1499, rating: 4.4, img: 'images/charger.jpg' },
+  { id: 11, title: 'Bluetooth Speaker', price: 2499, rating: 4.7, img: 'images/speaker.jpg' },
+  { id: 12, title: 'Webcam HD', price: 3499, rating: 4.5, img: 'images/webcam.jpg' }
+];
+
+// DOM ELEMENTS
 const productGrid = document.getElementById('productGrid');
-const cartCountEl = document.getElementById('cartCount');
+const searchInput = document.getElementById('searchInput');
+const searchBtn = document.getElementById('searchBtn');
+const sortSelect = document.getElementById('sortSelect');
 
-function renderProducts(list){
+// RENDER PRODUCTS
+function renderProducts(list) {
   productGrid.innerHTML = '';
-  list.forEach(p=>{
-    const div = document.createElement('div');
-    div.className = 'card';
-    div.innerHTML = `
-      <img src="${p.img}" alt="${p.title}" />
-      <div class="title">${p.title}</div>
-      <div class="meta">Rating: ${p.rating} ★</div>
-      <div class="price">₹ ${p.price}</div>
-      <div class="actions">
-        <button class="btn outline" onclick="viewProduct(${p.id})">View</button>
-        <button onclick="addToCart({
-  id: 101,
-  name: 'Nike Shoes',
-  price: 2499,
-  image: 'images/nike.jpg'
-})">Add to Cart</button>
+  
+  if (list.length === 0) {
+    productGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999;">No products found</p>';
+    return;
+  }
 
+  list.forEach(product => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.innerHTML = `
+      <img src="${product.img}" alt="${product.title}" onerror="this.src='images/no-image.png'" />
+      <div class="title">${product.title}</div>
+      <div class="meta">Rating: ${product.rating} ⭐</div>
+      <div class="price">₹${Number(product.price).toLocaleString('en-IN')}</div>
+      <div class="actions">
+        <button class="btn outline" onclick="viewProduct(${product.id})">View</button>
+        <button class="btn primary" onclick="addProductToCart(${product.id})">Add to Cart</button>
       </div>
     `;
-    productGrid.appendChild(div);
-  })
+    productGrid.appendChild(card);
+  });
+
+  console.log('📊 Rendered', list.length, 'products');
 }
 
-function viewProduct(id){
+// VIEW PRODUCT
+function viewProduct(id) {
   window.location.href = `product.html?id=${id}`;
 }
 
-function getCart(){ return JSON.parse(localStorage.getItem('vendo_cart')||'[]') }
-function setCart(c){ localStorage.setItem('vendo_cart',JSON.stringify(c)); updateCartCount(); }
-function addToCart(id){
-  const c = getCart();
-  const found = c.find(x=>x.id===id);
-  if(found) found.qty++;
-  else c.push({id,qty:1});
-  setCart(c);
-  // lightweight toast
-  const t = document.createElement('div');
-  t.textContent = 'Added to cart';
-  t.style.position='fixed'; t.style.right='20px'; t.style.bottom='120px';
-  t.style.background='var(--primary)'; t.style.color='white'; t.style.padding='8px 12px';
-  t.style.borderRadius='8px'; t.style.boxShadow='0 8px 24px rgba(0,0,0,0.12)'; t.style.zIndex=9999;
-  document.body.appendChild(t);
-  setTimeout(()=>t.remove(),1400);
+// ADD PRODUCT TO CART (Helper)
+function addProductToCart(productId) {
+  console.log('🛒 Adding product ID:', productId);
+  
+  const product = products.find(p => p.id === productId);
+  
+  if (!product) {
+    console.error('❌ Product not found:', productId);
+    return;
+  }
+
+  // Convert to cart format
+  const cartProduct = {
+    id: product.id,
+    name: product.title,
+    price: product.price,
+    image: product.img,
+    quantity: 1
+  };
+
+  addToCart(cartProduct); // Uses main.js function
 }
 
-function updateCartCount(){
-  const c = getCart();
-  const total = c.reduce((s,i)=>s+i.qty,0);
-  cartCountEl.textContent = total;
-}
-
-// search & sort handlers
-document.getElementById('searchBtn').addEventListener('click',()=>{
-  const q = document.getElementById('searchInput').value.toLowerCase();
-  const filtered = products.filter(p=>p.title.toLowerCase().includes(q));
+// SEARCH FUNCTIONALITY
+searchBtn.addEventListener('click', () => {
+  const query = searchInput.value.toLowerCase();
+  const filtered = products.filter(p => 
+    p.title.toLowerCase().includes(query)
+  );
   renderProducts(filtered);
+  console.log('🔍 Search:', query, '→', filtered.length, 'results');
 });
 
-document.getElementById('sortSelect').addEventListener('change',(e)=>{
-  const v = e.target.value;
-  let sorted = [...products];
-  if(v==='price-asc') sorted.sort((a,b)=>a.price - b.price);
-  if(v==='price-desc') sorted.sort((a,b)=>b.price - a.price);
-  renderProducts(sorted);
-});
-
-// chat widget (toggle)
-const chatToggle = document.createElement('button');
-chatToggle.className = 'chat-toggle';
-chatToggle.id = 'chatToggle';
-chatToggle.innerText = 'Chat';
-document.body.appendChild(chatToggle);
-
-const chatWindow = document.createElement('div');
-chatWindow.className = 'chat-window';
-chatWindow.id = 'chatWindow';
-chatWindow.style.display = 'none';
-chatWindow.innerHTML = `
-  <div class="header">Vendo Support • AI Assistant</div>
-  <div class="messages"><div style="font-size:13px;color:var(--muted)">Hello! I'm VendoBot — ask me about products, orders, or returns.</div></div>
-  <div class="composer">
-    <input id="chatInput" placeholder="Type your question..." />
-    <button id="sendChat">Send</button>
-  </div>
-`;
-document.body.appendChild(chatWindow);
-
-chatToggle.addEventListener('click',()=>{
-  if(chatWindow.style.display === 'none'){ chatWindow.style.display = 'flex'; } else { chatWindow.style.display = 'none'; }
-});
-
-// chat send (prototype)
-document.addEventListener('click', (e)=>{
-  if(e.target && e.target.id === 'sendChat'){
-    const chatInput = document.getElementById('chatInput');
-    const text = chatInput.value.trim();
-    if(!text) return;
-    const msgs = chatWindow.querySelector('.messages');
-    const u = document.createElement('div'); u.style.textAlign='right'; u.style.margin='8px 0'; u.textContent = 'You: '+text;
-    msgs.appendChild(u);
-    chatInput.value='';
-    const bot = document.createElement('div'); bot.style.margin='8px 0'; bot.textContent = 'VendoBot: Let me check that for you...';
-    msgs.appendChild(bot);
-    msgs.scrollTop = msgs.scrollHeight;
+searchInput.addEventListener('keypress', (e) => {
+  if (e.key === 'Enter') {
+    searchBtn.click();
   }
 });
 
-// init
-renderProducts(products);
-updateCartCount();
+// SORT FUNCTIONALITY
+sortSelect.addEventListener('change', (e) => {
+  const sortType = e.target.value;
+  let sorted = [...products];
+
+  switch(sortType) {
+    case 'price-asc':
+      sorted.sort((a, b) => a.price - b.price);
+      break;
+    case 'price-desc':
+      sorted.sort((a, b) => b.price - a.price);
+      break;
+    case 'rating':
+      sorted.sort((a, b) => b.rating - a.rating);
+      break;
+    default:
+      sorted = [...products];
+  }
+
+  renderProducts(sorted);
+  console.log('📊 Sorted by:', sortType);
+});
+
+// PRICE RANGE FILTER
+const priceRange = document.getElementById('priceRange');
+if (priceRange) {
+  priceRange.addEventListener('input', (e) => {
+    const maxPrice = Number(e.target.value);
+    const filtered = products.filter(p => p.price <= maxPrice);
+    renderProducts(filtered);
+    console.log('💰 Filtered by price:', maxPrice, '→', filtered.length, 'products');
+  });
+}
+
+// INITIALIZE PAGE
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('🎯 Homepage initialized');
+  renderProducts(products);
+  updateCartCount();
+});

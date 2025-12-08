@@ -1,95 +1,129 @@
-console.log("cart.js loaded");
+// CART.JS - SHOPPING CART PAGE
+console.log("✅ cart.js loaded");
 
-// Load cart from localStorage safely
-function loadCart() {
-  try {
-    return JSON.parse(localStorage.getItem("cart")) || [];
-  } catch (e) {
-    console.error("Cart JSON parse error", e);
-    return [];
-  }
-}
+// DOM ELEMENTS
+const cartItemsContainer = document.getElementById('cart-items');
+const emptyMessage = document.getElementById('empty-cart-message');
+const summaryBox = document.getElementById('summary-box');
+const subtotalElement = document.getElementById('subtotal');
+const totalElement = document.getElementById('total');
 
-let cart = loadCart();
-
-// DOM Elements
-const cartItemsContainer = document.getElementById("cart-items");
-const emptyMessage = document.getElementById("empty-cart-message");
-const summaryBox = document.getElementById("summary-box");
-const subtotalElement = document.getElementById("subtotal");
-const totalElement = document.getElementById("total");
-
-// Update UI
+// UPDATE CART UI
 function updateCartUI() {
-  console.log("updateCartUI: current cart =", cart);
+  const cart = getCart(); // From main.js
+  
+  console.log('📦 updateCartUI - Current cart:', cart);
 
   if (!cart || cart.length === 0) {
-    emptyMessage.style.display = "block";
-    summaryBox.style.display = "none";
-    cartItemsContainer.innerHTML = "";
+    console.log('🛒 Cart is empty');
+    cartItemsContainer.innerHTML = '';
+    emptyMessage.style.display = 'block';
+    summaryBox.style.display = 'none';
     return;
   }
 
-  emptyMessage.style.display = "none";
-  summaryBox.style.display = "block";
-
-  cartItemsContainer.innerHTML = "";
+  console.log('✅ Cart has items, rendering...');
+  emptyMessage.style.display = 'none';
+  summaryBox.style.display = 'block';
+  cartItemsContainer.innerHTML = '';
 
   let subtotal = 0;
 
   cart.forEach((item, index) => {
-    subtotal += item.price * item.quantity;
+    const itemQuantity = item.quantity || 1;
+    const itemPrice = Number(item.price) || 0;
+    const itemTotal = itemPrice * itemQuantity;
+    
+    subtotal += itemTotal;
 
-    cartItemsContainer.innerHTML += `
-      <div class="cart-item">
-        <img src="${item.image}" alt="">
+    const itemHTML = `
+      <div class="cart-item" data-id="${item.id}">
+        <img src="${item.image}" alt="${item.name}" onerror="this.src='images/no-image.png'">
         
         <div class="item-details">
           <h3>${item.name}</h3>
-          <p>₹${item.price}</p>
+          <p class="price">₹${itemPrice.toLocaleString('en-IN')}</p>
 
           <div class="quantity-controls">
-            <button onclick="decreaseQty(${index})">-</button>
-            <span>${item.quantity}</span>
+            <button onclick="decreaseQty(${index})">−</button>
+            <span class="qty-display">${itemQuantity}</span>
             <button onclick="increaseQty(${index})">+</button>
-            <button class="remove-btn" onclick="removeItem(${index})">Remove</button>
+            <button class="remove-btn" onclick="removeItem(${index})">🗑️ Remove</button>
           </div>
+        </div>
+
+        <div class="item-total">
+          <p>₹${itemTotal.toLocaleString('en-IN')}</p>
         </div>
       </div>
     `;
+
+    cartItemsContainer.innerHTML += itemHTML;
   });
 
-  subtotalElement.innerText = "₹" + subtotal;
-  totalElement.innerText = "₹" + (subtotal + 40);
+  // Update totals
+  const shippingCost = 40;
+  const total = subtotal + shippingCost;
+
+  subtotalElement.innerText = '₹' + subtotal.toLocaleString('en-IN');
+  totalElement.innerText = '₹' + total.toLocaleString('en-IN');
+
+  console.log('💰 Subtotal:', subtotal, 'Total:', total);
 }
 
-// Increase Quantity
+// INCREASE QUANTITY
 function increaseQty(index) {
-  cart[index].quantity++;
-  saveCart();
-}
-
-// Decrease Quantity
-function decreaseQty(index) {
-  if (cart[index].quantity > 1) {
-    cart[index].quantity--;
-  } else {
-    cart.splice(index, 1);
+  const cart = getCart();
+  if (cart[index]) {
+    cart[index].quantity = (cart[index].quantity || 1) + 1;
+    saveCart(cart);
+    console.log('➕ Increased qty for item:', index);
   }
-  saveCart();
 }
 
-// Remove item
+// DECREASE QUANTITY
+function decreaseQty(index) {
+  const cart = getCart();
+  if (cart[index]) {
+    if (cart[index].quantity > 1) {
+      cart[index].quantity--;
+      saveCart(cart);
+      console.log('➖ Decreased qty for item:', index);
+    } else {
+      removeItem(index);
+    }
+  }
+}
+
+// REMOVE ITEM
 function removeItem(index) {
+  const cart = getCart();
+  const itemName = cart[index]?.name || 'Item';
   cart.splice(index, 1);
-  saveCart();
+  saveCart(cart);
+  console.log('🗑️ Removed:', itemName);
+  showToast(`✅ "${itemName}" removed from cart`);
 }
 
-// Save and update
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
+// CLEAR CART
+function clearCart() {
+  if (confirm('⚠️ Are you sure you want to clear your entire cart?')) {
+    localStorage.removeItem(CART_KEY);
+    updateCartUI();
+    updateCartCount();
+    showToast('🗑️ Cart cleared');
+    console.log('🗑️ Cart cleared');
+  }
+}
+
+// INITIALIZE
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('🎯 Cart page loaded');
   updateCartUI();
-}
+});
 
-// Init
-updateCartUI();
+// Listen for storage changes (multi-tab sync)
+window.addEventListener('storage', () => {
+  console.log('🔄 Storage changed, updating cart');
+  updateCartUI();
+});
