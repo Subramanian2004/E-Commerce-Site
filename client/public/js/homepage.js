@@ -1,20 +1,20 @@
 // HOMEPAGE.JS - PRODUCT LISTING & ACTIONS
 console.log("✅ homepage.js loaded");
 
-// SAMPLE PRODUCTS DATA
+// SAMPLE PRODUCTS DATA (NO EXTERNAL IMAGES)
 const products = [
-  { id: 1, title: 'Wireless Earbuds', price: 1299, rating: 4.5, img: 'images/earbuds.jpg' },
-  { id: 2, title: 'Smart Watch', price: 2999, rating: 4.2, img: 'images/smartwatch.jpg' },
-  { id: 3, title: 'USB-C Cable', price: 299, rating: 4.8, img: 'images/cable.jpg' },
-  { id: 4, title: 'Phone Stand', price: 499, rating: 4.6, img: 'images/stand.jpg' },
-  { id: 5, title: 'Laptop Bag', price: 1999, rating: 4.4, img: 'images/bag.jpg' },
-  { id: 6, title: 'Wireless Mouse', price: 799, rating: 4.3, img: 'images/mouse.jpg' },
-  { id: 7, title: 'USB Hub', price: 899, rating: 4.7, img: 'images/hub.jpg' },
-  { id: 8, title: 'Screen Protector', price: 199, rating: 4.5, img: 'images/protector.jpg' },
-  { id: 9, title: 'Phone Case', price: 399, rating: 4.6, img: 'images/case.jpg' },
-  { id: 10, title: 'Charging Pad', price: 1499, rating: 4.4, img: 'images/charger.jpg' },
-  { id: 11, title: 'Bluetooth Speaker', price: 2499, rating: 4.7, img: 'images/speaker.jpg' },
-  { id: 12, title: 'Webcam HD', price: 3499, rating: 4.5, img: 'images/webcam.jpg' }
+  { id: 1, title: 'Wireless Earbuds', price: 1299, rating: 4.5, color: '#FF6B6B' },
+  { id: 2, title: 'Smart Watch', price: 2999, rating: 4.2, color: '#4ECDC4' },
+  { id: 3, title: 'USB-C Cable', price: 299, rating: 4.8, color: '#45B7D1' },
+  { id: 4, title: 'Phone Stand', price: 499, rating: 4.6, color: '#FFA07A' },
+  { id: 5, title: 'Laptop Bag', price: 1999, rating: 4.4, color: '#98D8C8' },
+  { id: 6, title: 'Wireless Mouse', price: 799, rating: 4.3, color: '#F7DC6F' },
+  { id: 7, title: 'USB Hub', price: 899, rating: 4.7, color: '#BB8FCE' },
+  { id: 8, title: 'Screen Protector', price: 199, rating: 4.5, color: '#85C1E2' },
+  { id: 9, title: 'Phone Case', price: 399, rating: 4.6, color: '#F8B88B' },
+  { id: 10, title: 'Charging Pad', price: 1499, rating: 4.4, color: '#52C97F' },
+  { id: 11, title: 'Bluetooth Speaker', price: 2499, rating: 4.7, color: '#EB6F6F' },
+  { id: 12, title: 'Webcam HD', price: 3499, rating: 4.5, color: '#8E7DBE' }
 ];
 
 // DOM ELEMENTS
@@ -35,8 +35,16 @@ function renderProducts(list) {
   list.forEach(product => {
     const card = document.createElement('div');
     card.className = 'card';
+    
+    // Use color backgrounds instead of images
+    const productImage = `
+      <div class="product-image-placeholder" style="background: linear-gradient(135deg, ${product.color} 0%, ${adjustBrightness(product.color, -20)} 100%);">
+        <span class="product-icon">📦</span>
+      </div>
+    `;
+
     card.innerHTML = `
-      <img src="${product.img}" alt="${product.title}" onerror="this.src='images/no-image.png'" />
+      ${productImage}
       <div class="title">${product.title}</div>
       <div class="meta">Rating: ${product.rating} ⭐</div>
       <div class="price">₹${Number(product.price).toLocaleString('en-IN')}</div>
@@ -51,12 +59,33 @@ function renderProducts(list) {
   console.log('📊 Rendered', list.length, 'products');
 }
 
+// HELPER: ADJUST COLOR BRIGHTNESS
+function adjustBrightness(color, percent) {
+  let R = parseInt(color.substring(1,3),16);
+  let G = parseInt(color.substring(3,5),16);
+  let B = parseInt(color.substring(5,7),16);
+
+  R = parseInt(R * (100 + percent) / 100);
+  G = parseInt(G * (100 + percent) / 100);
+  B = parseInt(B * (100 + percent) / 100);
+
+  R = (R<255)?R:255;
+  G = (G<255)?G:255;
+  B = (B<255)?B:255;
+
+  let RR = ((R.toString(16).length==1)?"0"+R.toString(16):R.toString(16));
+  let GG = ((G.toString(16).length==1)?"0"+G.toString(16):G.toString(16));
+  let BB = ((B.toString(16).length==1)?"0"+B.toString(16):B.toString(16));
+
+  return "#"+RR+GG+BB;
+}
+
 // VIEW PRODUCT
 function viewProduct(id) {
   window.location.href = `product.html?id=${id}`;
 }
 
-// ADD PRODUCT TO CART (Helper)
+// ADD PRODUCT TO CART
 function addProductToCart(productId) {
   console.log('🛒 Adding product ID:', productId);
   
@@ -67,16 +96,16 @@ function addProductToCart(productId) {
     return;
   }
 
-  // Convert to cart format
   const cartProduct = {
     id: product.id,
     name: product.title,
     price: product.price,
-    image: product.img,
+    image: null, // No image needed
+    color: product.color,
     quantity: 1
   };
 
-  addToCart(cartProduct); // Uses main.js function
+  addToCart(cartProduct);
 }
 
 // SEARCH FUNCTIONALITY
@@ -123,9 +152,10 @@ const priceRange = document.getElementById('priceRange');
 if (priceRange) {
   priceRange.addEventListener('input', (e) => {
     const maxPrice = Number(e.target.value);
+    document.getElementById('priceValue').textContent = maxPrice.toLocaleString('en-IN');
     const filtered = products.filter(p => p.price <= maxPrice);
     renderProducts(filtered);
-    console.log('💰 Filtered by price:', maxPrice, '→', filtered.length, 'products');
+    console.log('💰 Filtered by price:', maxPrice);
   });
 }
 

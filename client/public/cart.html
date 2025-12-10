@@ -36,7 +36,7 @@
   <nav class="category-bar">
     <div class="container">
       <a href="index.html">Home</a>
-      <a href="/ecommerce-platform/client/public/product.html">Products</a>
+      <a href="../public/product.html">Products</a>
       <a href="cart.html" class="active">Cart</a>
       <a href="account.html">Account</a>
     </div>
@@ -45,14 +45,21 @@
   <!-- MAIN CONTENT -->
   <main class="cart-container">
     <div class="container">
-      <h1>🛒 Shopping Cart</h1>
+      <div class="page-header">
+        <h1>🛒 Shopping Cart</h1>
+        <p class="breadcrumb"><a href="index.html">Home</a> > <span>Cart</span></p>
+      </div>
 
       <!-- Empty message -->
-      <p id="empty-cart-message" class="empty-message">Your cart is empty. <a href="products.html">Continue shopping</a></p>
+      <p id="empty-cart-message" class="empty-message">
+        Your cart is empty. <a href="index.html">Continue shopping</a>
+      </p>
 
       <div class="cart-wrapper">
         <!-- Cart Items -->
-        <div class="cart-items" id="cart-items"></div>
+        <div class="cart-items" id="cart-items">
+          <!-- Items will be injected here by JavaScript -->
+        </div>
 
         <!-- Summary -->
         <div class="cart-summary" id="summary-box">
@@ -74,7 +81,7 @@
           </p>
 
           <a href="checkout.html" class="checkout-btn">Proceed to Checkout</a>
-          <button class="btn-continue" onclick="window.location.href='products.html'">Continue Shopping</button>
+          <button class="btn-continue" onclick="window.location.href='index.html'">Continue Shopping</button>
           <button class="btn-clear" onclick="clearCart()">Clear Cart</button>
         </div>
       </div>

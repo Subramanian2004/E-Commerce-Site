@@ -1,15 +1,17 @@
 // MAIN.JS - GLOBAL UTILITIES
-
 console.log("✅ main.js loaded");
 
 // CART KEY (CENTRALIZED)
-const CART_KEY = 'flash_cart'; // Universal key for all pages
+const CART_KEY = 'flash_cart';
 
 // GET CART FROM LOCALSTORAGE
 function getCart() {
   try {
     const raw = localStorage.getItem(CART_KEY);
-    if (!raw) return [];
+    if (!raw) {
+      console.log('📭 No cart found in localStorage');
+      return [];
+    }
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
@@ -21,29 +23,44 @@ function getCart() {
 // SAVE CART TO LOCALSTORAGE
 function saveCart(cartArray) {
   try {
+    if (!Array.isArray(cartArray)) {
+      console.error('❌ Cart must be an array');
+      return false;
+    }
     localStorage.setItem(CART_KEY, JSON.stringify(cartArray));
     console.log('✅ Cart saved:', cartArray.length, 'items');
-    updateCartCount(); // Update everywhere
+    updateCartCount();
+    return true;
   } catch (err) {
     console.error('❌ Error saving cart:', err);
+    return false;
   }
 }
 
 // UPDATE CART COUNT BADGE
 function updateCartCount() {
-  const cartCountEl = document.getElementById('cartCount');
-  if (!cartCountEl) return;
+  const cartCountElements = document.querySelectorAll('#cartCount');
+  
+  if (cartCountElements.length === 0) {
+    console.log('⚠️ No cart count element found');
+    return;
+  }
   
   const cart = getCart();
   const total = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
-  cartCountEl.textContent = total;
-  console.log('📦 Cart count updated:', total);
+  
+  cartCountElements.forEach(el => {
+    el.textContent = total;
+  });
+  
+  console.log('📦 Cart count updated to:', total);
 }
 
 // ADD TO CART (PROPER VERSION)
 function addToCart(product) {
   if (!product || !product.id) {
     console.error('❌ Invalid product:', product);
+    showToast('❌ Error adding product', 2000);
     return false;
   }
 
@@ -51,7 +68,8 @@ function addToCart(product) {
     id: product.id,
     name: product.name || product.title || 'Untitled',
     price: Number(product.price || 0),
-    image: product.image || product.img || 'images/no-image.png',
+    image: product.image || product.img || null,
+    color: product.color || '#667eea',
     quantity: Number(product.quantity || 1)
   };
 
@@ -71,7 +89,7 @@ function addToCart(product) {
   }
 
   saveCart(cart);
-  showToast(`✅ "${normalized.name}" added to cart!`);
+  showToast(`✅ "${normalized.name}" added to cart!`, 2000);
   return true;
 }
 
@@ -100,7 +118,11 @@ function showToast(message, duration = 2000) {
 
   document.body.appendChild(toast);
 
-  setTimeout(() => toast.remove(), duration);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s ease';
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
 }
 
 // THEME SWITCHER
@@ -127,7 +149,7 @@ function toggleTheme() {
 
 // INITIALIZE ON EVERY PAGE
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🎯 DOM Content Loaded - Updating cart count');
+  console.log('🎯 DOM Content Loaded - Initializing...');
   updateCartCount();
 
   const themeToggle = document.getElementById('theme-toggle');
@@ -139,7 +161,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Listen for storage changes (multi-tab sync)
 window.addEventListener('storage', (e) => {
-  if (e.key === CART_KEY) {
+  if (e.key === CART_KEY || e.key === null) {
     console.log('🔄 Cart updated in another tab');
     updateCartCount();
   }
