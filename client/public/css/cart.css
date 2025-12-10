@@ -1,6 +1,6 @@
 /* CART.CSS - STYLES FOR SHOPPING CART PAGE */
 .cart-container {
-  background: #f5f5f5;
+  background-color: var(--bg);
   padding: 20px 0;
   min-height: calc(100vh - 200px);
 }
@@ -13,13 +13,13 @@
 
 .cart-container h1 {
   margin-bottom: 30px;
-  color: #1a1a1a;
+  color: var(--text);
   font-size: 28px;
 }
 
 .empty-message {
   text-align: center;
-  color: #999;
+  color: var(--muted);
   padding: 40px;
   font-size: 16px;
 }

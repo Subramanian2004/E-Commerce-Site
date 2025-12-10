@@ -103,10 +103,38 @@ function showToast(message, duration = 2000) {
   setTimeout(() => toast.remove(), duration);
 }
 
+// THEME SWITCHER
+const THEME_KEY = 'flash_theme';
+
+function applyTheme() {
+  const savedTheme = localStorage.getItem(THEME_KEY);
+  const themeToggle = document.getElementById('theme-toggle');
+  if (savedTheme === 'dark') {
+    document.body.classList.add('dark-theme');
+    if (themeToggle) themeToggle.innerHTML = '&#x2600;'; // Sun icon
+  } else {
+    document.body.classList.remove('dark-theme');
+    if (themeToggle) themeToggle.innerHTML = '&#x1F319;'; // Moon icon
+  }
+}
+
+function toggleTheme() {
+  const isDark = document.body.classList.toggle('dark-theme');
+  localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+  applyTheme();
+}
+
+
 // INITIALIZE ON EVERY PAGE
 document.addEventListener('DOMContentLoaded', () => {
   console.log('🎯 DOM Content Loaded - Updating cart count');
   updateCartCount();
+
+  const themeToggle = document.getElementById('theme-toggle');
+  if (themeToggle) {
+    themeToggle.addEventListener('click', toggleTheme);
+  }
+  applyTheme();
 });
 
 // Listen for storage changes (multi-tab sync)
