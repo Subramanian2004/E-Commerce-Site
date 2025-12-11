@@ -37,16 +37,14 @@ function updateCartUI() {
     
     subtotal += itemTotal;
 
-    // Generate color-based placeholder instead of loading images
-    const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8', '#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B88B', '#52C97F', '#EB6F6F', '#8E7DBE'];
-    const colorIndex = (item.id % colors.length);
-    const bgColor = colors[colorIndex];
-    const darkerColor = adjustBrightness(bgColor, -20);
+    // Use real image or fallback to placeholder
+    const imageUrl = item.image || '../public/images/no-image.png';
 
     const itemHTML = `
       <div class="cart-item" data-id="${item.id}">
-        <div class="product-image-placeholder" style="background: linear-gradient(135deg, ${bgColor} 0%, ${darkerColor} 100%);">
-          <span class="product-icon">📦</span>
+        <img src="${imageUrl}" alt="${item.name}" class="cart-item-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="image-fallback" style="display: none;">
+          <span>📦</span>
         </div>
         
         <div class="item-details">
@@ -80,26 +78,7 @@ function updateCartUI() {
   console.log('💰 Subtotal:', subtotal, 'Total:', total);
 }
 
-// HELPER: ADJUST COLOR BRIGHTNESS
-function adjustBrightness(color, percent) {
-  let R = parseInt(color.substring(1, 3), 16);
-  let G = parseInt(color.substring(3, 5), 16);
-  let B = parseInt(color.substring(5, 7), 16);
-
-  R = parseInt(R * (100 + percent) / 100);
-  G = parseInt(G * (100 + percent) / 100);
-  B = parseInt(B * (100 + percent) / 100);
-
-  R = (R < 255) ? R : 255;
-  G = (G < 255) ? G : 255;
-  B = (B < 255) ? B : 255;
-
-  let RR = ((R.toString(16).length == 1) ? "0" + R.toString(16) : R.toString(16));
-  let GG = ((G.toString(16).length == 1) ? "0" + G.toString(16) : G.toString(16));
-  let BB = ((B.toString(16).length == 1) ? "0" + B.toString(16) : B.toString(16));
-
-  return "#" + RR + GG + BB;
-}
+// HANDLERS FOR BUTTONS
 
 function handleIncreaseQty(index) {
   console.log('➕ Increasing qty for index:', index);
@@ -107,7 +86,7 @@ function handleIncreaseQty(index) {
   if (cart[index]) {
     cart[index].quantity = (cart[index].quantity || 1) + 1;
     saveCart(cart);
-    updateCartUI(); // CRITICAL: Update UI immediately
+    updateCartUI();
   }
 }
 
@@ -118,7 +97,7 @@ function handleDecreaseQty(index) {
     if (cart[index].quantity > 1) {
       cart[index].quantity--;
       saveCart(cart);
-      updateCartUI(); // CRITICAL: Update UI immediately
+      updateCartUI();
     } else {
       handleRemoveItem(index);
     }
@@ -133,7 +112,8 @@ function handleRemoveItem(index) {
     cart.splice(index, 1);
     saveCart(cart);
     showToast(`✅ "${itemName}" removed from cart`);
-    updateCartUI(); // CRITICAL: Update UI immediately
+    updateCartUI();
+    updateCartCount();
   }
 }
 
