@@ -131,8 +131,64 @@ function loadProductDetails() {
   // Store product globally
   window.currentProduct = product;
 
+  // Populate description, specifications and reviews (use product fields if present, otherwise sensible defaults)
+  populateExtras(product);
+
   // Load similar products
   loadSimilarProducts();
+}
+
+// Populate description, specifications and reviews
+function populateExtras(product) {
+  // Description
+  const descEl = document.getElementById('productDescription');
+  if (descEl) {
+    descEl.textContent = product.description || (`${product.title} is a premium-quality item crafted for everyday use. Designed with durability and style in mind, it delivers excellent performance and value for money.`);
+  }
+
+  // Specifications - set elements if present, fall back to defaults
+  const setIf = (id, value) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  };
+
+  setIf('specBrand', product.brand || 'Flash');
+  setIf('specModel', product.model || (`Model-${product.id}`));
+  setIf('specWarranty', product.warranty || '1 Year');
+  setIf('specColor', product.color || 'Various');
+  setIf('specDimensions', product.dimensions || 'See package');
+  setIf('specWeight', product.weight || 'Varies');
+
+  // Reviews - use product.reviews array if present; otherwise create sample reviews
+  const reviewsContainer = document.getElementById('reviewsList');
+  if (!reviewsContainer) return;
+
+  const reviews = product.reviews && product.reviews.length ? product.reviews : [
+    { title: 'Excellent quality', rating: 5, text: `Very happy with the ${product.title}. Highly recommended!`, author: 'A Verified Buyer' },
+    { title: 'Good value', rating: 4, text: `Good performance and value for the price. Would buy again.`, author: 'Happy Customer' }
+  ];
+
+  reviewsContainer.innerHTML = reviews.map(r => `
+    <div class="review-item">
+      <div class="review-header">
+        <strong>${escapeHtml(r.title)}</strong>
+        <span class="review-rating">${'⭐'.repeat(r.rating)}</span>
+      </div>
+      <p class="review-text">${escapeHtml(r.text)}</p>
+      <small class="review-author">- ${escapeHtml(r.author)}</small>
+    </div>
+  `).join('');
+}
+
+// small helper to avoid injecting raw HTML
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 // ============================================

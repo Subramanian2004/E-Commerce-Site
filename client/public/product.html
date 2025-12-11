@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Product Details - Flash</title>
 
-  <link rel="stylesheet" href="../public/css/global.css" />
-  <link rel="stylesheet" href="../public/css/product.css" />
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/product.css" />
 </head>
 <body>
 
@@ -130,6 +130,65 @@
         </div>
       </div>
 
+      <!-- TABS SECTION -->
+      <div class="tabs-section">
+        <div class="tabs">
+          <button class="tab-btn active" data-tab="description">Description</button>
+          <button class="tab-btn" data-tab="specifications">Specifications</button>
+          <button class="tab-btn" data-tab="reviews">Reviews</button>
+        </div>
+
+        <div id="description" class="tab-content active">
+          <h3>Product Description</h3>
+          <p id="productDescription">This product is a high-quality item designed for everyday use. It combines modern styling with durable materials for long-lasting performance.</p>
+          <p>Carefully engineered and tested to meet customer expectations. Ideal for home and professional use.</p>
+        </div>
+
+        <div id="specifications" class="tab-content">
+          <h3>Specifications</h3>
+          <table class="specs-table">
+            <tr>
+              <td><strong>Brand</strong></td>
+              <td id="specBrand">Flash</td>
+            </tr>
+            <tr>
+              <td><strong>Model</strong></td>
+              <td id="specModel">Premium X1</td>
+            </tr>
+            <tr>
+              <td><strong>Warranty</strong></td>
+              <td id="specWarranty">1 Year</td>
+            </tr>
+            <tr>
+              <td><strong>Color</strong></td>
+              <td id="specColor">Black</td>
+            </tr>
+            <tr>
+              <td><strong>Dimensions</strong></td>
+              <td id="specDimensions">20 x 15 x 10 cm</td>
+            </tr>
+            <tr>
+              <td><strong>Weight</strong></td>
+              <td id="specWeight">500g</td>
+            </tr>
+          </table>
+        </div>
+
+        <div id="reviews" class="tab-content">
+          <h3>Customer Reviews</h3>
+          <div class="reviews-list" id="reviewsList">
+            <div class="review-item">
+              <div class="review-header">
+                <strong>Excellent Quality!</strong>
+                <span class="review-rating">⭐⭐⭐⭐⭐</span>
+              </div>
+              <p class="review-text">Very satisfied with this purchase. Great quality and fast delivery. Highly recommend!</p>
+              <small class="review-author">- John Doe (Verified Buyer)</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- SIMILAR PRODUCTS -->
       <div class="similar-products">
         <h3>Similar Products You Might Like</h3>
@@ -147,8 +206,30 @@
   </footer>
 
   <!-- Scripts -->
-  <script src="../public/js/main.js"></script>
-  <script src="../public/js/product.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/product.js"></script>
 
+  <script>
+    // Tabs: show only the selected tab content
+    document.addEventListener('DOMContentLoaded', function () {
+      const tabs = document.querySelectorAll('.tab-btn');
+      const contents = document.querySelectorAll('.tab-content');
+
+      function clearActive() {
+        tabs.forEach(b => b.classList.remove('active'));
+        contents.forEach(c => c.classList.remove('active'));
+      }
+
+      tabs.forEach(btn => {
+        btn.addEventListener('click', () => {
+          clearActive();
+          btn.classList.add('active');
+          const id = btn.getAttribute('data-tab');
+          const el = document.getElementById(id);
+          if (el) el.classList.add('active');
+        });
+      });
+    });
+  </script>
 </body>
 </html>

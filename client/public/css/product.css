@@ -78,7 +78,7 @@ header.topbar {
 }
 
 .searchbar button:hover {
-  background: #ff8c00;
+  background: var(--secondary);
 }
 
 .top-actions {
@@ -230,7 +230,7 @@ nav.category-bar a.active {
 }
 
 .discount {
-  background: #ff5722;
+  background: var(--secondary);
   color: white;
   padding: 5px 10px;
   border-radius: 4px;
@@ -307,7 +307,7 @@ nav.category-bar a.active {
 }
 
 .btn-add-to-cart:hover {
-  background: #ff8c00;
+  background: var(--secondary);
   transform: translateY(-2px);
 }
 
@@ -449,4 +449,64 @@ footer.site-footer a:hover {
   .products-carousel {
     grid-template-columns: repeat(2, 1fr);
   }
+}
+
+/* ============================================
+   DESCRIPTION / SPECIFICATIONS / REVIEWS STYLES
+   ============================================ */
+.tabs-section {
+  margin-top: 30px;
+  background: var(--card);
+  border: 1px solid rgba(16,24,40,0.04);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.tabs {
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid rgba(16,24,40,0.04);
+  background: var(--card);
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 14px 18px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 15px;
+  text-align: center;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.tab-btn:hover { background: rgba(0,0,0,0.03); color: var(--text); }
+
+.tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); background: var(--card); }
+
+.tab-content { display: none; padding: 22px 26px; }
+.tab-content.active { display: block; }
+
+/* Description */
+#description h3, #specifications h3, #reviews h3 { margin: 0 0 12px 0; color: var(--text); font-size: 20px; }
+#description p { color: var(--muted); line-height: 1.7; margin: 0 0 12px 0; }
+
+/* Specifications */
+.specs-table { width: 100%; border-collapse: collapse; }
+.specs-table td { padding: 12px 10px; border-bottom: 1px solid rgba(16,24,40,0.04); color: var(--muted); }
+.specs-table td:first-child { width: 32%; font-weight: 700; color: var(--text); background: var(--bg); }
+
+/* Reviews */
+.reviews-list { display:flex; flex-direction:column; gap:12px; }
+.review-item { background: #fbfbfb; border: 1px solid rgba(16,24,40,0.03); padding: 14px; border-radius: 8px; }
+.review-header { display:flex; justify-content:space-between; align-items:flex-start; gap:10px; }
+.review-rating { color: #ffb020; font-weight:700; }
+.review-text { color: var(--muted); margin-top:8px; line-height:1.6; }
+.review-author { display:block; margin-top:8px; color: var(--muted); font-size:13px; }
+
+@media (max-width: 640px) {
+  .tab-btn { font-size: 14px; padding: 10px; }
+  .tab-content { padding: 16px; }
 }

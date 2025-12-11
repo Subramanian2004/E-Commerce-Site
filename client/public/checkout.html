@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout - Flash</title>
+  
+  <link rel="stylesheet" href="../public/css/global.css">
+  <link rel="stylesheet" href="../public/css/checkout.css">
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header class="checkout-header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo-section">
+          <a href="index.html" class="brand">
+            <div class="logo">⚡</div>
+            <h1>Flash</h1>
+          </a>
+        </div>
+        <div class="security-badge">
+          🔒 Secure Checkout
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- BREADCRUMB -->
+  <div class="breadcrumb-bar">
+    <div class="container">
+      <a href="cart.html">Cart</a> > <span class="current">Checkout</span> > Order Complete
+    </div>
+  </div>
+
+  <!-- MAIN CHECKOUT CONTAINER -->
+  <main class="checkout-container">
+    <div class="container">
+      <div class="checkout-grid">
+        
+        <!-- LEFT SIDE - FORMS -->
+        <div class="checkout-forms">
+          
+          <!-- STEP 1: DELIVERY ADDRESS -->
+          <div class="checkout-section" id="addressSection">
+            <div class="section-header">
+              <span class="step-number">1</span>
+              <h2>Delivery Address</h2>
+              <button class="edit-btn" style="display:none;">Edit</button>
+            </div>
+            
+            <div class="section-content">
+              <!-- Saved Addresses -->
+              <div id="savedAddresses" class="saved-addresses">
+                <!-- Will be populated by JS -->
+              </div>
+              
+              <!-- Add New Address Form -->
+              <button id="addNewAddressBtn" class="add-address-btn">
+                + Add a New Address
+              </button>
+              
+              <div id="addressForm" class="address-form" style="display:none;">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" id="fullName" placeholder="John Doe" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Mobile Number *</label>
+                    <input type="tel" id="mobile" placeholder="+91 9876543210" required>
+                  </div>
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Pincode *</label>
+                    <input type="text" id="pincode" placeholder="400001" maxlength="6" required>
+                  </div>
+                  <div class="form-group">
+                    <label>City *</label>
+                    <input type="text" id="city" placeholder="Mumbai" required>
+                  </div>
+                </div>
+                
+                <div class="form-group">
+                  <label>Address Line 1 *</label>
+                  <input type="text" id="address1" placeholder="Flat/House No., Building Name" required>
+                </div>
+                
+                <div class="form-group">
+                  <label>Address Line 2</label>
+                  <input type="text" id="address2" placeholder="Street, Area">
+                </div>
+                
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>State *</label>
+                    <select id="state" required>
+                      <option value="">Select State</option>
+                      <option value="MH">Maharashtra</option>
+                      <option value="DL">Delhi</option>
+                      <option value="KA">Karnataka</option>
+                      <option value="TN">Tamil Nadu</option>
+                      <option value="GJ">Gujarat</option>
+                      <option value="RJ">Rajasthan</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Address Type</label>
+                    <div class="radio-group">
+                      <label class="radio-label">
+                        <input type="radio" name="addressType" value="home" checked>
+                        <span>Home</span>
+                      </label>
+                      <label class="radio-label">
+                        <input type="radio" name="addressType" value="work">
+                        <span>Work</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="form-actions">
+                  <button type="button" id="saveAddressBtn" class="btn-save">Save & Deliver Here</button>
+                  <button type="button" id="cancelAddressBtn" class="btn-cancel">Cancel</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- STEP 2: PAYMENT METHOD -->
+          <div class="checkout-section disabled" id="paymentSection">
+            <div class="section-header">
+              <span class="step-number">2</span>
+              <h2>Payment Method</h2>
+              <button class="edit-btn" style="display:none;">Edit</button>
+            </div>
+            
+            <div class="section-content" style="display:none;">
+              <div class="payment-options">
+                <!-- Credit/Debit Card -->
+                <label class="payment-option">
+                  <input type="radio" name="payment" value="card">
+                  <div class="payment-content">
+                    <span class="payment-icon">💳</span>
+                    <div>
+                      <strong>Credit/Debit Card</strong>
+                      <p>All major cards accepted</p>
+                    </div>
+                  </div>
+                </label>
+                
+                <!-- UPI -->
+                <label class="payment-option">
+                  <input type="radio" name="payment" value="upi">
+                  <div class="payment-content">
+                    <span class="payment-icon">📱</span>
+                    <div>
+                      <strong>UPI</strong>
+                      <p>Pay using Google Pay, PhonePe, Paytm</p>
+                    </div>
+                  </div>
+                </label>
+                
+                <!-- Net Banking -->
+                <label class="payment-option">
+                  <input type="radio" name="payment" value="netbanking">
+                  <div class="payment-content">
+                    <span class="payment-icon">🏦</span>
+                    <div>
+                      <strong>Net Banking</strong>
+                      <p>All banks supported</p>
+                    </div>
+                  </div>
+                </label>
+                
+                <!-- Cash on Delivery -->
+                <label class="payment-option">
+                  <input type="radio" name="payment" value="cod" checked>
+                  <div class="payment-content">
+                    <span class="payment-icon">💵</span>
+                    <div>
+                      <strong>Cash on Delivery</strong>
+                      <p>Pay when you receive</p>
+                    </div>
+                  </div>
+                </label>
+              </div>
+              
+              <!-- Card Details Form (hidden by default) -->
+              <div id="cardDetails" class="card-details" style="display:none;">
+                <h4>Enter Card Details</h4>
+                <div class="form-group">
+                  <label>Card Number</label>
+                  <input type="text" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Expiry Date</label>
+                    <input type="text" id="expiry" placeholder="MM/YY" maxlength="5">
+                  </div>
+                  <div class="form-group">
+                    <label>CVV</label>
+                    <input type="password" id="cvv" placeholder="123" maxlength="3">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Cardholder Name</label>
+                  <input type="text" id="cardName" placeholder="John Doe">
+                </div>
+              </div>
+              
+              <!-- UPI Details (hidden by default) -->
+              <div id="upiDetails" class="upi-details" style="display:none;">
+                <h4>Enter UPI ID</h4>
+                <div class="form-group">
+                  <label>UPI ID</label>
+                  <input type="text" id="upiId" placeholder="yourname@upi">
+                </div>
+              </div>
+              
+              <button id="continuePaymentBtn" class="btn-continue">Continue</button>
+            </div>
+          </div>
+          
+          <!-- STEP 3: REVIEW ITEMS -->
+          <div class="checkout-section disabled" id="reviewSection">
+            <div class="section-header">
+              <span class="step-number">3</span>
+              <h2>Review Items & Delivery</h2>
+              <button class="edit-btn" style="display:none;">Edit</button>
+            </div>
+            
+            <div class="section-content" style="display:none;">
+              <div class="delivery-date">
+                <strong>Estimated Delivery:</strong> <span id="deliveryDate">--</span>
+              </div>
+              
+              <div class="review-items" id="reviewItems">
+                <!-- Items will be populated by JS -->
+              </div>
+              
+              <button id="placeOrderBtn" class="btn-place-order">Place Order</button>
+            </div>
+          </div>
+          
+        </div>
+        
+        <!-- RIGHT SIDE - ORDER SUMMARY -->
+        <div class="checkout-sidebar">
+          
+          <!-- Order Summary Card -->
+          <div class="order-summary-card">
+            <h3>Order Summary</h3>
+            
+            <div class="summary-items" id="summaryItems">
+              <!-- Items will be populated by JS -->
+            </div>
+            
+            <div class="summary-totals">
+              <div class="summary-row">
+                <span>Items:</span>
+                <span id="itemsTotal">₹0</span>
+              </div>
+              <div class="summary-row">
+                <span>Delivery:</span>
+                <span id="deliveryCharge">₹40</span>
+              </div>
+              <div class="summary-row">
+                <span>GST (18%):</span>
+                <span id="gstAmount">₹0</span>
+              </div>
+              <div class="summary-row total">
+                <strong>Order Total:</strong>
+                <strong id="orderTotal">₹0</strong>
+              </div>
+            </div>
+            
+            <!-- Promo Code -->
+            <div class="promo-code">
+              <input type="text" id="promoCode" placeholder="Enter promo code">
+              <button id="applyPromo">Apply</button>
+            </div>
+            
+            <div id="promoMessage" class="promo-message"></div>
+          </div>
+          
+          <!-- Security Features -->
+          <div class="security-features">
+            <div class="feature">
+              <span>🔒</span>
+              <p>Your transaction is secured with SSL encryption</p>
+            </div>
+            <div class="feature">
+              <span>🛡️</span>
+              <p>100% Purchase Protection</p>
+            </div>
+            <div class="feature">
+              <span>📞</span>
+              <p>24/7 Customer Support</p>
+            </div>
+          </div>
+          
+        </div>
+        
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="checkout-footer">
+    <div class="container">
+      <p>© 2025 Flash. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms</a></p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="../public/js/main.js"></script>
+  <script src="../public/js/checkout.js"></script>
+
+</body>
+</html>
